@@ -11,4 +11,4 @@ async def get_session() -> Generator:
     try:
         yield session
     finally:
-        session.close()
+       await session.close()
