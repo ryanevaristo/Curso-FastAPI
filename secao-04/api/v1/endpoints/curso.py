@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, status, Depends, HTTPException, Response
-import sqlalchemy
+
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select

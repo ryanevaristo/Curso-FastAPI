@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from api.v1 import api
+from api.v1.api import api_router
 import uvicorn
 from core.configs import settings
 app = FastAPI(title="Curso API - FastAPI - SQLalchemy")
 
-app.include_router(api.api_router)
+app.include_router(api_router)
 
 
 
