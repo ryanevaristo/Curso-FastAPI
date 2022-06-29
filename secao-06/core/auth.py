@@ -31,7 +31,7 @@ async def autenticar(email: EmailStr, senha: str, db: AsyncSession) -> Optional[
         if not verificar_senha(senha, usuario.senha):
             return None
         
-        return usuario.email
+        return usuario
 
 
 def _criar_token(tipo_token: str, tempo_vida: timedelta, sub: str) -> str:
@@ -53,7 +53,8 @@ def criar_acesso_token(sub: str) -> str:
     visitar o site : jwt.io
     """
     return _criar_token(
-        tipo_token='acess_token',
-        tempo_vida=settings.ACESS_TOKEN_EXPIRE_MINUTES,
+        tipo_token='access_token',
+        tempo_vida=timedelta(minutes=settings.ACESS_TOKEN_EXPIRE_MINUTES),
         sub=sub
     )
+

@@ -112,12 +112,13 @@ async def delete_usuario(id_usuario: int, db: AsyncSession = Depends(get_session
             raise HTTPException(detail="Usuário não encontrado....", status_code=status.HTTP_404_NOT_FOUND)
 
 
-#POST LOGIN
-@router.post('/login',status_code=status.HTTP_202_ACCEPTED)
+# POST Login
+@router.post('/login')
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_session)):
     usuario = await autenticar(email=form_data.username, senha=form_data.password, db=db)
 
     if not usuario:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Dados  de Acesso Invalidos....")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail='Dados de acesso incorretos.')
 
-    return JSONResponse(content={"acess_token" : criar_acesso_token(sub=usuario.id), "Token_type": "Bearer"}, status_code=status.HTTP_200_OK)
+    return JSONResponse(content={"access_token": criar_acesso_token(sub=usuario.id), "token_type": "bearer"}, status_code=status.HTTP_200_OK)
