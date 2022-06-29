@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 
 class UsuarioModel(settings.DBBaseModel):
-    __tablename__ = 'cursos'
+    __tablename__ = 'usuarios'
     
     id: int = Column(Integer, primary_key=True, autoincrement=True)
     nome : str = Column(String(256), nullable=True)
