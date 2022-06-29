@@ -43,14 +43,15 @@ async def post_usuario(usuario: UsuarioSchemaCreate, db: AsyncSession = Depends(
 
 
 #GET USUARIOS
-@router.get('/', response_model=List[UsuarioSchemaBase])
+@router.get('/', response_model=List[UsuarioSchemaBase], status_code=status.HTTP_200_OK)
 async def get_usuarios(db: AsyncSession = Depends(get_session)) -> UsuarioSchemaBase:
     async with db as session:
         query = select(UsuarioModel)
         result = await session.execute(query)
         usuarios: List[UsuarioSchemaBase] = result.scalars().unique().all()
-
-    return usuarios
+    
+        return usuarios
+    
 
 
 #GET USUARIO
@@ -69,7 +70,7 @@ async def get_usuario(id_usuario: int, db: AsyncSession = Depends(get_session)):
 
 
 #PUT USUARIO
-@router.put('/{id_usuario}', response_model=UsuarioSchemaBase, status_code=status.HTTP_202_ACCEPTED)
+@router.put('/{id_usuario}', response_model=UsuarioSchemaUpdate, status_code=status.HTTP_202_ACCEPTED)
 async def put_usuario(id_usuario: int,usuario: UsuarioSchemaUpdate, db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(UsuarioModel).filter(UsuarioModel.id == id_usuario)
@@ -112,7 +113,7 @@ async def delete_usuario(id_usuario: int, db: AsyncSession = Depends(get_session
 
 
 #POST LOGIN
-router.post('/login')
+@router.post('/login',status_code=status.HTTP_202_ACCEPTED)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_session)):
     usuario = await autenticar(email=form_data.username, senha=form_data.password, db=db)
 

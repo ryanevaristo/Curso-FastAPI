@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from api.v1.endpoints import artigo
 from api.v1.endpoints import usuario
+from core.auth import oauth2_schema
 
 api_router = APIRouter()
 

@@ -14,7 +14,7 @@ class UsuarioModel(settings.DBBaseModel):
     senha : str = Column(String(256), nullable=False)
     is_admin: bool = Column(Boolean(), default=False)
     artigos: relationship = relationship(
-        "ArtigosModel",
+        "ArtigoModel",
         cascade="all,delete-orphan",
         back_populates="criador",
         uselist=True,
