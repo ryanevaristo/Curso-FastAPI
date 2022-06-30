@@ -17,16 +17,12 @@ router = APIRouter()
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=ArtigoSchema)
 async def post_artigo(artigo: ArtigoSchema, usuario_logado: UsuarioModel = Depends(get_current_user), db: AsyncSession = Depends(get_session)):
     novo_artigo: ArtigoModel = ArtigoModel(
-        titulo=artigo.titulo,
-        descricao=artigo.descricao,
-        url_fonte=artigo.url_fonte,
-        usuario_id=artigo.usuario_id        
-    )
-    async with db as session:
-        session.add(novo_artigo)
-        await session.commit()
-    
-        return novo_artigo
+        titulo=artigo.titulo, descricao=artigo.descricao, url_fonte=artigo.url_fonte, usuario_id=usuario_logado.id)
+
+    db.add(novo_artigo)
+    await db.commit()
+
+    return novo_artigo
 
 
 #GET ARTIGOS
@@ -34,7 +30,7 @@ async def post_artigo(artigo: ArtigoSchema, usuario_logado: UsuarioModel = Depen
 async def get_artigos(db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(ArtigoModel)
-        result = session.execute(query)
+        result = await session.execute(query)
         artigos: List[ArtigoModel] = result.scalars().unique().all()
         
         if artigos:
@@ -48,7 +44,7 @@ async def get_artigos(db: AsyncSession = Depends(get_session)):
 async def get_artigo(id_artigo: int, db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(ArtigoModel).filter(ArtigoModel.id == id_artigo)
-        result = session.execute(query)
+        result = await session.execute(query)
         artigo: ArtigoModel = result.scalars().unique().one_or_none()
 
         if artigo:
@@ -63,7 +59,7 @@ async def get_artigo(id_artigo: int, db: AsyncSession = Depends(get_session)):
 async def put_artigo(id_artigo: int, artigo: ArtigoSchema, db: AsyncSession = Depends(get_session), usuario_logado: UsuarioModel = Depends(get_current_user)):
     async with db as session:
         query = select(ArtigoModel).filter(ArtigoModel.id == id_artigo).filter(UsuarioModel.id == usuario_logado.id)
-        result = session.execute(query)
+        result = await session.execute(query)
         artigo_up: ArtigoModel = result.scalars().unique().one_or_none()
 
         if artigo_up:
@@ -85,7 +81,7 @@ async def put_artigo(id_artigo: int, artigo: ArtigoSchema, db: AsyncSession = De
 @router.delete('/{id_artigo}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_artigo(id_artigo: int, db: AsyncSession = Depends(get_session), usuario_logado: UsuarioModel = Depends(get_current_user)):
     async with db as session:
-        query = select(ArtigoModel).filter(ArtigoModel.id == id_artigo, UsuarioModel.id == usuario_logado.id)
+        query = select(ArtigoModel).filter(ArtigoModel.id == id_artigo).filter(UsuarioModel.id == usuario_logado.id)
         result = session.execute(query)
         artigo_del: ArtigoModel = result.scalars().unique().one_or_none()
 
